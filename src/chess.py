@@ -1,5 +1,6 @@
 import numpy as np
 import copy
+import random
 
 class Block:
     def __init__(self, symbol, color):
@@ -195,7 +196,7 @@ def get_valid_moves(board, start_x, start_y):
                 break
             if board[start_y][temp_x].get_color() == block_color:
                 break
-            if board[start_y][temp_x].get_color() != block_color and board[start_y][temp_x].get_color != 'none':
+            if board[start_y][temp_x].get_color() != block_color and board[start_y][temp_x].get_color() != 'none':
                 possible_moves.append([start_x, start_y, temp_x, start_y])
                 break
             possible_moves.append([start_x, start_y, temp_x, start_y])
@@ -208,7 +209,7 @@ def get_valid_moves(board, start_x, start_y):
                 break
             if board[start_y][temp_x].get_color() == block_color:
                 break
-            if board[start_y][temp_x].get_color() != block_color and board[start_y][temp_x].get_color != 'none':
+            if board[start_y][temp_x].get_color() != block_color and board[start_y][temp_x].get_color() != 'none':
                 possible_moves.append([start_x, start_y, temp_x, start_y])
                 break
             possible_moves.append([start_x, start_y, temp_x, start_y])
@@ -221,7 +222,7 @@ def get_valid_moves(board, start_x, start_y):
                 break
             if board[temp_y][start_x].get_color() == block_color:
                 break
-            if board[temp_y][start_x].get_color() != block_color and board[temp_y][start_x].get_color != 'none':
+            if board[temp_y][start_x].get_color() != block_color and board[temp_y][start_x].get_color() != 'none':
                 possible_moves.append([start_x, start_y, start_x, temp_y])
                 break
             possible_moves.append([start_x, start_y, start_x, temp_y])
@@ -234,7 +235,7 @@ def get_valid_moves(board, start_x, start_y):
                 break
             if board[temp_y][start_x].get_color() == block_color:
                 break
-            if board[temp_y][start_x].get_color() != block_color and board[temp_y][start_x].get_color != 'none':
+            if board[temp_y][start_x].get_color() != block_color and board[temp_y][start_x].get_color() != 'none':
                 possible_moves.append([start_x, start_y, start_x, temp_y])
                 break
             possible_moves.append([start_x, start_y, start_x, temp_y])
@@ -251,7 +252,7 @@ def get_valid_moves(board, start_x, start_y):
                 break
             if board[temp_y][temp_x].get_color() == block_color:
                 break
-            if board[temp_y][temp_x].get_color() != block_color and board[temp_y][temp_x].get_color != 'none':
+            if board[temp_y][temp_x].get_color() != block_color and board[temp_y][temp_x].get_color() != 'none':
                 possible_moves.append([start_x, start_y, temp_x, temp_y])
                 break
             possible_moves.append([start_x, start_y, temp_x, temp_y])
@@ -266,7 +267,7 @@ def get_valid_moves(board, start_x, start_y):
                 break
             if board[temp_y][temp_x].get_color() == block_color:
                 break
-            if board[temp_y][temp_x].get_color() != block_color and board[temp_y][temp_x].get_color != 'none':
+            if board[temp_y][temp_x].get_color() != block_color and board[temp_y][temp_x].get_color() != 'none':
                 possible_moves.append([start_x, start_y, temp_x, temp_y])
                 break
             possible_moves.append([start_x, start_y, temp_x, temp_y])
@@ -281,7 +282,7 @@ def get_valid_moves(board, start_x, start_y):
                 break
             if board[temp_y][temp_x].get_color() == block_color:
                 break
-            if board[temp_y][temp_x].get_color() != block_color and board[temp_y][temp_x].get_color != 'none':
+            if board[temp_y][temp_x].get_color() != block_color and board[temp_y][temp_x].get_color() != 'none':
                 possible_moves.append([start_x, start_y, temp_x, temp_y])
                 break
             possible_moves.append([start_x, start_y, temp_x, temp_y])
@@ -296,7 +297,7 @@ def get_valid_moves(board, start_x, start_y):
                 break
             if board[temp_y][temp_x].get_color() == block_color:
                 break
-            if board[temp_y][temp_x].get_color() != block_color and board[temp_y][temp_x].get_color != 'none':
+            if board[temp_y][temp_x].get_color() != block_color and board[temp_y][temp_x].get_color() != 'none':
                 possible_moves.append([start_x, start_y, temp_x, temp_y])
                 break
             possible_moves.append([start_x, start_y, temp_x, temp_y])
@@ -388,7 +389,6 @@ def calculate_score(board):
 
 # perform heuristic calculation at a depth of 3
 def heuristic(board, depth, mode, a_cutoff, b_cutoff):
-    
     # MAX node - initialize with -infinity
     if mode == 'MAX':
         best_score = -100000000000
@@ -403,13 +403,15 @@ def heuristic(board, depth, mode, a_cutoff, b_cutoff):
     best_move = all_possible_moves[0]
     
     for new_move in all_possible_moves:
-    
+        
         new_board = make_move(board, new_move)
         
         if mode == 'MAX':
             next_mode = 'MIN'
         else:
             next_mode = 'MAX'
+            
+        new_score = 0
         
         # base case
         if depth == 1:
@@ -418,9 +420,18 @@ def heuristic(board, depth, mode, a_cutoff, b_cutoff):
             _, new_score = heuristic(new_board, depth - 1, next_mode, a_cutoff, b_cutoff)
         
         if mode == 'MAX':
-            if new_score > best_score:
-                best_score = new_score
-                best_move = new_move
+            if depth == 4 and new_score == best_score:
+                print("new move: ", new_move)
+            
+            if new_score >= best_score:
+                if new_score == best_score:
+                    if random.randint(0, 9) >= 7:
+                        best_score = new_score
+                        best_move = new_move
+                else:
+                    best_score = new_score
+                    best_move = new_move
+                    
                 a_cutoff = best_score
                 
                 # prune search tree
@@ -428,9 +439,15 @@ def heuristic(board, depth, mode, a_cutoff, b_cutoff):
                     break
                 
         else:
-            if new_score < best_score:
-                best_score = new_score
-                best_move = new_move
+            if new_score <= best_score:
+                if new_score == best_score:
+                    if random.randint(0, 9) >= 7:
+                        best_score = new_score
+                        best_move = new_move
+                else:
+                    best_score = new_score
+                    best_move = new_move
+                    
                 b_cutoff = best_score
                 
                 # prune search tree
@@ -476,6 +493,8 @@ if __name__ == "__main__":
             opponent_move, best_score = heuristic(board, 4, 'MAX', -100000000000, 100000000000)
             print("best_score: ", best_score)
         else:
+            all_possible_moves = get_all_possible_moves(board, 'white')
+            print("all_possible_moves: ", all_possible_moves)
             op_move = input("Enter your move: ")
             opponent_move = convert_move(op_move)
             
@@ -490,6 +509,8 @@ if __name__ == "__main__":
             opponent_move, best_score = heuristic(board, 4, 'MIN', -100000000000, 100000000000)
             print("best_score: ", best_score)
         else:
+            all_possible_moves = get_all_possible_moves(board, 'black')
+            print("all_possible_moves: ", all_possible_moves)
             op_move = input("Enter your move: ")
             opponent_move = convert_move(op_move)
 
