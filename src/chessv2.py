@@ -930,7 +930,7 @@ if __name__ == "__main__":
         play_mode = input("use bot? (y/n): ")
         if play_mode == 'y':
             all_possible_moves = get_all_possible_moves(board, 'white')
-            opponent_move, best_score = heuristic(board, 4, 'MAX', -100000000000, 100000000000, all_possible_moves, [])
+            opponent_move, best_score = heuristic(board, 5, 'MAX', -100000000000, 100000000000, all_possible_moves, [])
             print("best_score: ", best_score)
         else:
             op_move = input("Enter your move: ")
@@ -945,7 +945,7 @@ if __name__ == "__main__":
         play_mode = input("use bot? (y/n): ")
         if play_mode == 'y':
             all_possible_moves = get_all_possible_moves(board, 'black')
-            opponent_move, best_score = heuristic(board, 4, 'MIN', -100000000000, 100000000000, [], all_possible_moves)
+            opponent_move, best_score = heuristic(board, 5, 'MIN', -100000000000, 100000000000, [], all_possible_moves)
             print("best_score: ", best_score)
         else:
             op_move = input("Enter your move: ")
