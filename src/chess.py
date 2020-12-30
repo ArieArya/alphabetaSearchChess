@@ -36,19 +36,19 @@ class Block:
     
     def get_score(self):
         if self.is_pawn():
-            return 1
-        elif self.is_horse():
-            return 3
-        elif self.is_bishop():
-            return 3
-        elif self.is_rook():
             return 5
+        elif self.is_horse():
+            return 20
+        elif self.is_bishop():
+            return 20
+        elif self.is_rook():
+            return 30
         elif self.is_queen():
-            return 10
+            return 90
         elif self.is_king():
-            return 50
+            return 900
         else:
-            return 0      
+            return 0
 
 # initialize chess board     
 def initialize_board():
@@ -97,6 +97,108 @@ def initialize_board():
                 row.append(block)
             board.append(row)
     
+    return board
+
+
+def custom_board():
+    board = []
+    for i in range(8):
+        if i == 0:
+            row = []
+            row.append(Block('r', 'black'))
+            row.append(Block('h', 'black'))
+            row.append(Block('b', 'black'))
+            row.append(Block('.', 'none'))
+            row.append(Block('.', 'none'))
+            row.append(Block('r', 'black'))
+            row.append(Block('k', 'black'))
+            row.append(Block('.', 'none'))
+            board.append(row)
+
+        elif i == 1:
+            row = []
+            row.append(Block('p', 'black'))
+            row.append(Block('p', 'black'))
+            row.append(Block('.', 'none'))
+            row.append(Block('p', 'black'))
+            row.append(Block('.', 'none'))
+            row.append(Block('p', 'black'))
+            row.append(Block('.', 'none'))
+            row.append(Block('p', 'black'))
+            board.append(row)
+            
+        elif i == 2:
+            row = []
+            row.append(Block('.', 'none'))
+            row.append(Block('.', 'none'))
+            row.append(Block('p', 'black'))
+            row.append(Block('.', 'none'))
+            row.append(Block('.', 'none'))
+            row.append(Block('.', 'none'))
+            row.append(Block('.', 'none'))
+            row.append(Block('p', 'black'))
+            board.append(row)
+            
+        elif i == 3:
+            row = []
+            row.append(Block('p', 'white'))
+            row.append(Block('.', 'none'))
+            row.append(Block('.', 'none'))
+            row.append(Block('.', 'none'))
+            row.append(Block('.', 'none'))
+            row.append(Block('.', 'none'))
+            row.append(Block('.', 'none'))
+            row.append(Block('.', 'none'))
+            board.append(row)
+            
+        elif i == 4:
+            row = []
+            row.append(Block('.', 'none'))
+            row.append(Block('b', 'black'))
+            row.append(Block('.', 'none'))
+            row.append(Block('p', 'white'))
+            row.append(Block('.', 'none'))
+            row.append(Block('.', 'none'))
+            row.append(Block('.', 'none'))
+            row.append(Block('.', 'none'))
+            board.append(row)
+            
+        elif i == 5:
+            row = []
+            row.append(Block('.', 'none'))
+            row.append(Block('.', 'none'))
+            row.append(Block('.', 'none'))
+            row.append(Block('.', 'none'))
+            row.append(Block('.', 'none'))
+            row.append(Block('.', 'none'))
+            row.append(Block('.', 'none'))
+            row.append(Block('.', 'none'))
+            board.append(row)
+            
+        elif i == 6:
+            row = []
+            row.append(Block('.', 'none'))
+            row.append(Block('.', 'none'))
+            row.append(Block('.', 'none'))
+            row.append(Block('.', 'none'))
+            row.append(Block('p', 'white'))
+            row.append(Block('p', 'white'))
+            row.append(Block('p', 'white'))
+            row.append(Block('p', 'white'))
+            board.append(row)
+
+        elif i == 7:
+            row = []
+            row.append(Block('r', 'white'))
+            row.append(Block('h', 'white'))
+            row.append(Block('.', 'none'))
+            row.append(Block('k', 'white'))
+            row.append(Block('.', 'none'))
+            row.append(Block('b', 'white'))
+            row.append(Block('h', 'white'))
+            row.append(Block('r', 'white'))
+            board.append(row)
+
     return board
 
 
@@ -316,7 +418,7 @@ def get_valid_moves(board, start_x, start_y):
                     
             # check up left
             if start_x - 1 >= 0:
-                if board[start_y-1][start_x+1].get_color() != block_color:
+                if board[start_y-1][start_x-1].get_color() != block_color:
                     possible_moves.append([start_x, start_y, start_x-1, start_y-1])
             
         # check down
@@ -424,35 +526,23 @@ def heuristic(board, depth, mode, a_cutoff, b_cutoff):
                 print("new move: ", new_move)
             
             if new_score >= best_score:
-                if new_score == best_score:
-                    if random.randint(0, 9) >= 7:
-                        best_score = new_score
-                        best_move = new_move
-                else:
-                    best_score = new_score
-                    best_move = new_move
-                    
+                best_score = new_score
+                best_move = new_move   
                 a_cutoff = best_score
                 
                 # prune search tree
                 if a_cutoff >= b_cutoff:
-                    break
+                    return best_move, b_cutoff + 1
                 
         else:
             if new_score <= best_score:
-                if new_score == best_score:
-                    if random.randint(0, 9) >= 7:
-                        best_score = new_score
-                        best_move = new_move
-                else:
-                    best_score = new_score
-                    best_move = new_move
-                    
+                best_score = new_score
+                best_move = new_move 
                 b_cutoff = best_score
                 
                 # prune search tree
                 if b_cutoff <= a_cutoff:
-                    break
+                    return best_move, a_cutoff - 1
                 
     return best_move, best_score
         
@@ -481,7 +571,7 @@ def print_board(board):
             
 if __name__ == "__main__":
     counter = 0
-    board = initialize_board()
+    board = custom_board()
     
     print("move", counter, ": ")
     print_board(board)
@@ -493,8 +583,6 @@ if __name__ == "__main__":
             opponent_move, best_score = heuristic(board, 4, 'MAX', -100000000000, 100000000000)
             print("best_score: ", best_score)
         else:
-            all_possible_moves = get_all_possible_moves(board, 'white')
-            print("all_possible_moves: ", all_possible_moves)
             op_move = input("Enter your move: ")
             opponent_move = convert_move(op_move)
             
@@ -509,8 +597,6 @@ if __name__ == "__main__":
             opponent_move, best_score = heuristic(board, 4, 'MIN', -100000000000, 100000000000)
             print("best_score: ", best_score)
         else:
-            all_possible_moves = get_all_possible_moves(board, 'black')
-            print("all_possible_moves: ", all_possible_moves)
             op_move = input("Enter your move: ")
             opponent_move = convert_move(op_move)
 
